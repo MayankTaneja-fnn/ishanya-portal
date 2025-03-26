@@ -8,6 +8,8 @@ import { AccessibilityMenu } from '@/components/ui/AccessibilityMenu';
 import ChatBot from '@/components/chatbot/ChatBot';
 import { getCurrentUser } from '@/lib/auth';
 import DyslexiaToggle from '@/components/ui/DyslexiaToggle';
+import ReadAloud from '@/components/ui/ReadAloud';
+import KeyboardNavigation from '@/components/ui/KeyboardNavigation';
 
 type LayoutProps = {
   title: string;
@@ -48,6 +50,7 @@ const Layout = ({ title, subtitle, children, showBackButton = false, onBack }: L
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex items-center gap-2">
+              <ReadAloud />
               <DyslexiaToggle />
               <AccessibilityMenu />
             </div>
@@ -66,14 +69,17 @@ const Layout = ({ title, subtitle, children, showBackButton = false, onBack }: L
           </div>
         </div>
         
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+        <main className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
           {children}
-        </div>
+        </main>
       </div>
       
       {shouldShowChatbot && (
         <ChatBot isOpen={chatbotOpen} onClose={() => setChatbotOpen(false)} />
       )}
+      
+      {/* Keyboard Navigation Component */}
+      <KeyboardNavigation />
     </div>
   );
 };
