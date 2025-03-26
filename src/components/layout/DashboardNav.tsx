@@ -5,7 +5,6 @@ import { Home, Users, LogOut, BookOpen, User, Kanban } from 'lucide-react';
 import { logout, getCurrentUser, getUserRole } from '@/lib/auth';
 import { toast } from 'sonner';
 import { useLanguage } from '@/components/ui/LanguageProvider';
-import NotificationMenu from './NotificationMenu';
 
 export function DashboardNav() {
   const navigate = useNavigate();
@@ -41,9 +40,6 @@ export function DashboardNav() {
 
   return (
     <div className="flex items-center space-x-2">
-      {/* Notification menu */}
-      <NotificationMenu />
-      
       {/* Show admin dashboard link only to administrators */}
       {userRole === 'administrator' && (
         <Button 
