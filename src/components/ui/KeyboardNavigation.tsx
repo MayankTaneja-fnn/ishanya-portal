@@ -2,15 +2,13 @@
 import { useEffect, useState } from 'react';
 import { useLanguage } from '@/components/ui/LanguageProvider';
 import { KeyboardIcon } from 'lucide-react';
-import { 
-  Button,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogClose
-} from '@/components/ui';
+import { Button } from '@/components/ui/button';
+import { Dialog } from '@/components/ui/dialog';
+import { DialogContent } from '@/components/ui/dialog';
+import { DialogHeader } from '@/components/ui/dialog';
+import { DialogTitle } from '@/components/ui/dialog';
+import { DialogDescription } from '@/components/ui/dialog';
+import { DialogClose } from '@/components/ui/dialog';
 
 const KeyboardNavigation = () => {
   const { t } = useLanguage();
