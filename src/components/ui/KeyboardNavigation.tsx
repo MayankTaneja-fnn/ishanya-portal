@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { useLanguage } from '@/components/ui/LanguageProvider';
-import { KeyboardIcon } from 'lucide-react';
+import { Keyboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { DialogContent } from '@/components/ui/dialog';
@@ -9,6 +9,7 @@ import { DialogHeader } from '@/components/ui/dialog';
 import { DialogTitle } from '@/components/ui/dialog';
 import { DialogDescription } from '@/components/ui/dialog';
 import { DialogClose } from '@/components/ui/dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const KeyboardNavigation = () => {
   const { t } = useLanguage();
@@ -27,7 +28,7 @@ const KeyboardNavigation = () => {
         return;
       }
 
-      // Show keyboard shortcuts help with Alt+?
+      // Show keyboard shortcuts help with Alt+/
       if (e.altKey && e.key === '/') {
         e.preventDefault();
         setIsDialogOpen(true);
@@ -123,6 +124,10 @@ const KeyboardNavigation = () => {
     focusableElements[prevIndex]?.focus();
   };
 
+  const toggleKeyboardNavigation = () => {
+    setIsNavigationActive(prev => !prev);
+  };
+
   return (
     <>
       <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end space-y-2">
@@ -132,6 +137,28 @@ const KeyboardNavigation = () => {
             {t('accessibility.keyboard_navigation_active') || 'Keyboard Navigation Active'}
           </div>
         )}
+        
+        {/* Keyboard navigation button */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className={`rounded-full shadow-md ${isNavigationActive ? 'bg-primary text-primary-foreground' : 'bg-white dark:bg-gray-800'}`}
+                onClick={toggleKeyboardNavigation}
+                aria-label={t('accessibility.toggle_keyboard_navigation') || 'Toggle keyboard navigation'}
+              >
+                <Keyboard className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              {isNavigationActive 
+                ? t('accessibility.disable_keyboard_navigation') || 'Disable keyboard navigation' 
+                : t('accessibility.enable_keyboard_navigation') || 'Enable keyboard navigation'}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

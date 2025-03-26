@@ -65,12 +65,22 @@ const ReadAloud = () => {
     const u = new SpeechSynthesisUtterance();
     setUtterance(u);
     
-    // Extract readable content from the page
-    // We'll exclude navigation, buttons, etc.
+    // Set a slower rate for the speech
+    u.rate = 0.9; // Slower than default (1.0)
+    
+    // Extract readable content from the page, starting from navbar
+    // First get navbar content, then the main content
+    const navbarElement = document.querySelector('nav') || document.querySelector('header');
     const contentElements = document.querySelectorAll('main p, main h1, main h2, main h3, main h4, main h5, main h6, main li, .card-content, .readable-content');
     
-    // If no specific readable content, get all text from the main content area
     let textToRead = '';
+    
+    // Start with navbar content if available
+    if (navbarElement) {
+      textToRead += navbarElement.textContent + '. '; // Add a pause after navbar
+    }
+    
+    // If no specific readable content, get all text from the main content area
     if (contentElements.length > 0) {
       contentElements.forEach(element => {
         textToRead += element.textContent + ' ';
@@ -78,7 +88,7 @@ const ReadAloud = () => {
     } else {
       // Fallback to main content or entire page content
       const mainContent = document.querySelector('main') || document.body;
-      textToRead = mainContent.textContent || '';
+      textToRead = textToRead + ' ' + (mainContent.textContent || '');
     }
     
     // Filter out some common UI text that shouldn't be read

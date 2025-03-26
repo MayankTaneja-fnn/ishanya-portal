@@ -1,7 +1,7 @@
 
 import { ReactNode, useState } from 'react';
 import { DashboardNav } from './DashboardNav';
-import { ArrowLeft, MessageSquare } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Volume2, Keyboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/components/ui/LanguageProvider';
 import { AccessibilityMenu } from '@/components/ui/AccessibilityMenu';
@@ -10,6 +10,7 @@ import { getCurrentUser } from '@/lib/auth';
 import DyslexiaToggle from '@/components/ui/DyslexiaToggle';
 import ReadAloud from '@/components/ui/ReadAloud';
 import KeyboardNavigation from '@/components/ui/KeyboardNavigation';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 type LayoutProps = {
   title: string;
@@ -49,7 +50,7 @@ const Layout = ({ title, subtitle, children, showBackButton = false, onBack }: L
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <ReadAloud />
               <DyslexiaToggle />
               <AccessibilityMenu />

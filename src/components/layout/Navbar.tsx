@@ -16,6 +16,8 @@ import { LogOut, User } from 'lucide-react';
 import { AccessibilityMenu } from '@/components/ui/AccessibilityMenu';
 import { useLanguage } from '@/components/ui/LanguageProvider';
 import { toast } from 'sonner';
+import ReadAloud from '@/components/ui/ReadAloud';
+import KeyboardNavigation from '@/components/ui/KeyboardNavigation';
 
 const Navbar = () => {
   const user = getCurrentUser();
@@ -76,8 +78,11 @@ const Navbar = () => {
           </div>
           
           <div className="flex items-center space-x-4">
-            {/* Accessibility Menu */}
-            <AccessibilityMenu />
+            {/* Accessibility controls */}
+            <div className="flex items-center space-x-2">
+              <ReadAloud />
+              <AccessibilityMenu />
+            </div>
             
             {/* User menu dropdown */}
             <DropdownMenu>
@@ -110,6 +115,9 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      
+      {/* Keyboard Navigation Component */}
+      <KeyboardNavigation />
     </nav>
   );
 };
