@@ -1,6 +1,4 @@
 
-// This file fixes the TypeScript error by simplifying the destructuring and error handling
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,18 +21,37 @@ const payrollSchema = z.object({
 
 type PayrollFormValues = z.infer<typeof payrollSchema>;
 
-const PayrollForm = ({ existingPayroll = null, onSuccess = () => {} }) => {
+// Update the props interface to include employeeId and onCancel
+interface PayrollFormProps {
+  employeeId?: number;
+  existingPayroll?: any;
+  initialData?: any;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}
+
+const PayrollForm = ({ 
+  employeeId, 
+  existingPayroll = null, 
+  initialData = null,
+  onSuccess = () => {}, 
+  onCancel = () => {} 
+}: PayrollFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
+  // Use initialData if provided, otherwise use existingPayroll
+  const payrollData = initialData || existingPayroll;
+
+  // Use employeeId if provided from props
   const form = useForm<PayrollFormValues>({
     resolver: zodResolver(payrollSchema),
     defaultValues: {
-      employee_id: existingPayroll?.employee_id || '',
-      payment_date: existingPayroll?.payment_date || '',
-      amount: existingPayroll?.amount ? String(existingPayroll.amount) : '',
-      payment_type: existingPayroll?.payment_type || '',
-      status: existingPayroll?.status || 'pending',
+      employee_id: employeeId ? String(employeeId) : payrollData?.employee_id || '',
+      payment_date: payrollData?.payment_date || '',
+      amount: payrollData?.amount ? String(payrollData.amount) : '',
+      payment_type: payrollData?.payment_type || '',
+      status: payrollData?.status || 'pending',
     },
   });
 
@@ -42,7 +59,7 @@ const PayrollForm = ({ existingPayroll = null, onSuccess = () => {} }) => {
     setIsSubmitting(true);
     
     try {
-      if (existingPayroll?.id) {
+      if (payrollData?.id) {
         // Update existing payroll
         const { error } = await supabase
           .from('payroll')
@@ -53,7 +70,7 @@ const PayrollForm = ({ existingPayroll = null, onSuccess = () => {} }) => {
             payment_type: data.payment_type,
             status: data.status,
           })
-          .eq('id', existingPayroll.id);
+          .eq('id', payrollData.id);
           
         if (error) throw error;
         
@@ -77,7 +94,7 @@ const PayrollForm = ({ existingPayroll = null, onSuccess = () => {} }) => {
       
       onSuccess();
       
-      if (!existingPayroll) {
+      if (!payrollData) {
         form.reset();
       }
     } catch (error) {
@@ -91,19 +108,22 @@ const PayrollForm = ({ existingPayroll = null, onSuccess = () => {} }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="employee_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Employee ID</FormLabel>
-              <FormControl>
-                <Input placeholder="Employee ID" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* If employeeId is provided, we don't need to show the employee_id field */}
+        {!employeeId && (
+          <FormField
+            control={form.control}
+            name="employee_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Employee ID</FormLabel>
+                <FormControl>
+                  <Input placeholder="Employee ID" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name="payment_date"
@@ -176,9 +196,14 @@ const PayrollForm = ({ existingPayroll = null, onSuccess = () => {} }) => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving...' : existingPayroll ? 'Update Payroll' : 'Create Payroll'}
-        </Button>
+        <div className="flex justify-end space-x-2">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : payrollData ? 'Update Payroll' : 'Create Payroll'}
+          </Button>
+        </div>
       </form>
     </Form>
   );
