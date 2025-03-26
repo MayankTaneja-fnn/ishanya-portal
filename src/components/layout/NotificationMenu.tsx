@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Bell,
   Check,
@@ -31,9 +31,11 @@ const NotificationMenu = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const user = getCurrentUser();
+  const notificationsInitialized = useRef(false);
   
   useEffect(() => {
-    if (user) {
+    if (user && !notificationsInitialized.current) {
+      notificationsInitialized.current = true;
       fetchNotifications();
       
       // Set up real-time subscription for new notifications
@@ -55,7 +57,7 @@ const NotificationMenu = () => {
           event: 'INSERT',
           schema: 'public',
           table: 'announcements'
-        }, async (payload) => {
+        }, async () => {
           fetchNotifications();
         })
         .subscribe();

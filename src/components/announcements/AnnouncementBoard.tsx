@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Megaphone } from 'lucide-react';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
@@ -12,6 +12,7 @@ const AnnouncementBoard = () => {
   const [loading, setLoading] = useState(true);
   const user = getCurrentUser();
   const userIsAdmin = isAdmin();
+  const fetchInitialized = useRef(false);
 
   const fetchAnnouncements = async () => {
     try {
@@ -38,7 +39,10 @@ const AnnouncementBoard = () => {
   };
 
   useEffect(() => {
-    fetchAnnouncements();
+    if (!fetchInitialized.current) {
+      fetchInitialized.current = true;
+      fetchAnnouncements();
+    }
   }, []);
 
   return (
